@@ -1,0 +1,28 @@
+NAME
+    tsp - Solves the travelling salesman's problem(tsp) with various algorithms.
+
+SYNOPSIS
+    tsp [-f <file with data>] [-m <np_complete | np_partial>] [-h]
+
+DESCRIPTION
+    Solves the traveling salesman problem in two ways: by a complete search of
+    all possible combinations and by a heuristic algorithm.
+    The numbering of vertices starts from 1.
+
+OPTIONS
+    -f
+        Extracts the distance matrix from the specified file.
+
+    -m
+        Solves this task by specified method:
+        
+        np_complete - complete search of all possible Hamiltonian
+        cycles(brute force method). Complexity - O((n - 1)! / 2).
+        
+        np_partial - heuristic algorithm. This option used nearest neighbour
+        algorithm. Complexity - O(n^2).
+
+        Default value of this parameter - np_complete.
+    
+    -h
+        Prints this manual.
