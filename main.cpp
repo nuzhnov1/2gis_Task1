@@ -8,7 +8,7 @@
 
 
 void print_result(const std::vector<size_t>& result, double path_len);
-void print_info(const std::string& _man_filename);
+void print_manual(const std::string& _man_filename);
 
 
 const std::string MANUAL_FILE_NAME = "manual.txt";
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     }
     
     if (args.get_help_flag())
-        print_info(MANUAL_FILE_NAME);
+        print_manual(MANUAL_FILE_NAME);
     else
     {
         std::pair<std::vector<size_t>, double> result;
@@ -60,7 +60,7 @@ void print_result(const std::vector<size_t>& path, double path_len)
     std::cout << "Cycle length: " << path_len << "." << std::endl;
 }
 
-void print_info(const std::string& _man_filename)
+void print_manual(const std::string& _man_filename)
 {
     std::ifstream manual_file(_man_filename);
     
