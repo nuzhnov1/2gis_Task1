@@ -11,6 +11,9 @@ void print_result(const std::vector<size_t>& result, double path_len);
 void print_info(const std::string& _man_filename);
 
 
+const std::string MANUAL_FILE_NAME = "manual.txt";
+
+
 int main(int argc, char** argv) {
     std::vector<size_t> result_path;
     double result_path_len = 0.0;
@@ -28,7 +31,7 @@ int main(int argc, char** argv) {
     }
     
     if (args.get_help_flag())
-        print_info("tsp_man.txt");
+        print_info(MANUAL_FILE_NAME);
     else
     {
         std::pair<std::vector<size_t>, double> result;
@@ -72,7 +75,12 @@ void print_info(const std::string& _man_filename)
     
     if (manual_file.bad())
     {
-        std::cout << "Failed to read manual from file " << _man_filename
-                  << std::endl;
+        std::cout << "Failed to read manual from file " 
+            << '\"' << _man_filename << '\"' << std::endl;
+    }
+    else if (!manual_file.is_open())
+    {
+        std::cout << "Failed to open manual file " 
+            << '\"' << _man_filename << '\"' << std::endl;
     }
 }
