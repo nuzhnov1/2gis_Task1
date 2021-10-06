@@ -5,7 +5,7 @@
 #include <numeric>
 
 
-double _path_len(const std::vector<size_t>& vertices, 
+double _tour_len(const std::vector<size_t>& vertices, 
                  const DistantMatrix& matrix);
 size_t _factorial(size_t num);
 
@@ -22,7 +22,7 @@ brute_force(const DistantMatrix& _matrix)
         cur_tour[i] = i;
     min_tour = cur_tour;
 
-    double cur_path = _path_len(cur_tour, _matrix);
+    double cur_path = _tour_len(cur_tour, _matrix);
     double min_path = cur_path;
 
     size_t count = _factorial(size - 1) / 2;
@@ -31,7 +31,7 @@ brute_force(const DistantMatrix& _matrix)
     {
         // Rearranging the vertices in lexicographic order
         std::next_permutation(cur_tour.begin() + 1, cur_tour.end());
-        cur_path = _path_len(cur_tour, _matrix);
+        cur_path = _tour_len(cur_tour, _matrix);
 
         if (cur_path < min_path) 
         {
@@ -74,12 +74,12 @@ nearest_neighbour(const DistantMatrix& _matrix)
         std::swap<size_t>(min_tour[i + 1], min_tour[next_vertex]);
     }
 
-    double min_path = _path_len(min_tour, _matrix);
+    double min_path = _tour_len(min_tour, _matrix);
 
     return std::pair<std::vector<size_t>, double>(min_tour, min_path);
 }
 
-double _path_len(const std::vector<size_t>& _vertices,
+double _tour_len(const std::vector<size_t>& _vertices,
                  const DistantMatrix& _matrix) 
 {
     double path = 0;
