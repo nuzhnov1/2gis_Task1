@@ -175,6 +175,8 @@ std::shared_ptr<DistantMatrix> _parse_matrix(const char* _filename)
          
         throw bad_parse(message);
     }
+    else if (!stream.is_open())
+        throw bad_parse("failed to open the specifed file");
     else
         throw bad_parse("missing terminating 0 in the specifed file");
 }
