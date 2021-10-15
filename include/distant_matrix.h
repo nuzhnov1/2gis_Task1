@@ -15,7 +15,7 @@ public:
 
     explicit DistantMatrix() noexcept = default;
     explicit DistantMatrix(const std::vector<double>& data,
-                           size_t size) noexcept;
+        size_t size) noexcept;
     DistantMatrix(const DistantMatrix& other) noexcept = default;
 
     DistantMatrix& operator=(const DistantMatrix& matrix) = default;

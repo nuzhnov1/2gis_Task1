@@ -8,10 +8,10 @@
 
 
 void print_result(const std::vector<size_t>& result, double path_len);
-void print_manual(const std::string& _man_filename);
+void print_manual(const std::string& progname);
 
 
-const std::string MANUAL_FILENAME = "../manual.txt";
+constexpr auto MANUAL_FILENAME = "manual.txt";
 
 
 int main(int argc, char** argv) {
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     }
     
     if (args.get_help_flag())
-        print_manual(MANUAL_FILENAME);
+        print_manual(args.get_progname());
     else
     {
         std::pair<std::vector<size_t>, double> result;
@@ -60,10 +60,24 @@ void print_result(const std::vector<size_t>& path, double path_len)
     std::cout << "Cycle length: " << path_len << "." << std::endl;
 }
 
-void print_manual(const std::string& _man_filename)
+void print_manual(const std::string& progname)
 {
-    std::ifstream manual_file(_man_filename);
+#if defined(_WIN32)
+    char path_delim = '\\';
+#elif defined(__unix__)
+    char path_delim = '/';
+#endif
+
+    // characters number of path without manual filename
+    size_t n = progname.find_last_of(path_delim);
+    std::string man_filename = 
+        std::string(progname.begin(), progname.begin() + n + 1) +
+        MANUAL_FILENAME;
+
+    // open manual file
+    std::ifstream manual_file(man_filename);
     
+    // reads every line in the file and prints it to standard output
     while (manual_file.good())
     {
         std::string buffer;
@@ -76,11 +90,11 @@ void print_manual(const std::string& _man_filename)
     if (manual_file.bad())
     {
         std::cout << "Failed to read manual from file " 
-            << '\"' << _man_filename << '\"' << std::endl;
+            << '\"' << man_filename << '\"' << std::endl;
     }
     else if (!manual_file.is_open())
     {
         std::cout << "Failed to open manual file " 
-            << '\"' << _man_filename << '\"' << std::endl;
+            << '\"' << man_filename << '\"' << std::endl;
     }
 }

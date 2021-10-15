@@ -11,23 +11,23 @@ using Algorithm = ArgParser::Algorithm;
 using Arguments = ArgParser::Arguments;
 
 
-std::shared_ptr<DistantMatrix> _parse_matrix(const char* _filename);
+std::shared_ptr<DistantMatrix> _parse_matrix(char* filename);
 bool _is_sqr(double num);
 Algorithm _parse_algo_type(char* arg);
 
 
-bad_parse::bad_parse(const std::string& _what) noexcept :
-    m_what(_what)
+bad_parse::bad_parse(const std::string& what) noexcept :
+    m_what(what)
 {
 }
 
-bad_parse::bad_parse(const char* _what) noexcept :
-    m_what(_what)
+bad_parse::bad_parse(const char* what) noexcept :
+    m_what(what)
 {
 }
 
-bad_parse::bad_parse(const bad_parse& _other) noexcept :
-    m_what(_other.m_what)
+bad_parse::bad_parse(const bad_parse& other) noexcept :
+    m_what(other.m_what)
 {
 }
 
@@ -37,11 +37,18 @@ const char* bad_parse::what() const noexcept
 }
 
 
-Arguments::Arguments(std::shared_ptr<DistantMatrix>& _matrix_ptr,
-                     Algorithm _algo, bool _help_flag) noexcept :
-    m_matrix_ptr(std::move(_matrix_ptr)), m_algo(_algo),
-    m_help_flag(_help_flag)
+Arguments::Arguments(const std::string& progname, 
+    const std::shared_ptr<DistantMatrix>& matrix_ptr, Algorithm algo,
+    bool help_flag) noexcept :
+
+    m_progname(progname), m_matrix_ptr(std::move(matrix_ptr)), m_algo(algo),
+    m_help_flag(help_flag)
 {
+}
+
+std::string Arguments::get_progname() const
+{
+    return m_progname;
 }
 
 std::shared_ptr<DistantMatrix> Arguments::get_matrix() const 
@@ -60,16 +67,17 @@ bool Arguments::get_help_flag() const
 }
 
 
-Arguments ArgParser::parse_arguments(size_t _argc, char** _argv) 
+Arguments ArgParser::parse_arguments(size_t argc, char** argv) 
 {
+    std::string progname = argv[0];
     std::shared_ptr<DistantMatrix> matrix_ptr = nullptr;
     Algorithm algo = Algorithm::brute_force;
     bool help_flag = false;
 
     // skip first commands argument - program name
-    for (size_t i = 1; i < _argc; i++) 
+    for (size_t i = 1; i < argc; i++) 
     {
-        std::string arg(_argv[i]);
+        std::string arg(argv[i]);
 
         // parse single dash arguments
         if (arg[0] == '-') 
@@ -81,27 +89,27 @@ Arguments ArgParser::parse_arguments(size_t _argc, char** _argv)
             case 'f':
             {
                 i++;
-                if (i >= _argc)
+                if (i >= argc)
                 {
                     throw bad_parse(
                         "data file is not specified " 
                         "for parameter \"-f\"");
                 }
 
-                matrix_ptr = _parse_matrix(_argv[i]);
+                matrix_ptr = _parse_matrix(argv[i]);
                 break;
             }
             case 'm':
             {
                 i++;
-                if (i >= _argc)
+                if (i >= argc)
                 {
                     throw bad_parse(
                         "calculation mode is not set "
                         "for parameter \"-m\"");
                 }
                 
-                algo = _parse_algo_type(_argv[i]);
+                algo = _parse_algo_type(argv[i]);
                 break;
             }
             case 'h':
@@ -109,7 +117,7 @@ Arguments ArgParser::parse_arguments(size_t _argc, char** _argv)
                 matrix_ptr = nullptr;
                 help_flag = true;
                 
-                return Arguments(matrix_ptr, algo, help_flag);
+                return Arguments(progname, matrix_ptr, algo, help_flag);
             }
             default:
             {
@@ -134,12 +142,12 @@ Arguments ArgParser::parse_arguments(size_t _argc, char** _argv)
     if (matrix_ptr == nullptr)
         help_flag = true;
 
-    return Arguments(matrix_ptr, algo, help_flag);
+    return Arguments(progname, matrix_ptr, algo, help_flag);
 }
 
-std::shared_ptr<DistantMatrix> _parse_matrix(const char* _filename) 
+std::shared_ptr<DistantMatrix> _parse_matrix(char* filename) 
 {
-    std::ifstream stream(_filename);
+    std::ifstream stream(filename);
     std::vector<double> distants;
     double dist = 0.0;
 
@@ -171,7 +179,7 @@ std::shared_ptr<DistantMatrix> _parse_matrix(const char* _filename)
     {
         std::string message = 
             std::string("failed to read file ") + std::string("\"") + 
-            std::string(_filename) + std::string("\"");
+            std::string(filename) + std::string("\"");
          
         throw bad_parse(message);
     }
@@ -181,10 +189,8 @@ std::shared_ptr<DistantMatrix> _parse_matrix(const char* _filename)
         throw bad_parse("missing terminating 0 in the specifed file");
 }
 
-Algorithm _parse_algo_type(char* _arg) 
+Algorithm _parse_algo_type(char* arg) 
 {
-    std::string arg(_arg);
-
     if (arg == "np_complete")
         return Algorithm::brute_force;
     else if (arg == "np_partial")
@@ -199,12 +205,12 @@ Algorithm _parse_algo_type(char* _arg)
     }
 }
 
-bool _is_sqr(double _num) 
+bool _is_sqr(double num) 
 {
     size_t sqr = 0;
 
-    for (size_t i = 1; sqr + 2 <= _num; i += 2)
+    for (size_t i = 1; sqr + 2 <= num; i += 2)
         sqr += i;
     
-    return _num == sqr || _num == 1;
+    return num == sqr || num == 1;
 }

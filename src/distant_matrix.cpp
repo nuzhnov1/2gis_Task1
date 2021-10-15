@@ -1,9 +1,10 @@
 #include "distant_matrix.h"
 
 
-DistantMatrix::DistantMatrix(const std::vector<double>& _data, 
-                             size_t _size) noexcept : 
-    m_data(_data), m_size(_size)
+DistantMatrix::DistantMatrix(const std::vector<double>& data, 
+    size_t size) noexcept :
+     
+    m_data(data), m_size(size)
 {
 }
 

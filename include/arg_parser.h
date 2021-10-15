@@ -36,7 +36,8 @@ namespace ArgParser
 
     class Arguments 
     {
-
+        
+        std::string                     m_progname;
         std::shared_ptr<DistantMatrix>  m_matrix_ptr;
         Algorithm                       m_algo;
         bool                            m_help_flag;
@@ -44,12 +45,14 @@ namespace ArgParser
     public:
 
         explicit Arguments() noexcept = default;
-        explicit Arguments(std::shared_ptr<DistantMatrix>& matrix_ptr,
-                           Algorithm algo, bool help_flag) noexcept;
+        explicit Arguments(const std::string& progname, 
+            const std::shared_ptr<DistantMatrix>& matrix_ptr, Algorithm algo, 
+            bool help_flag) noexcept;
         Arguments(const Arguments&) = default;
 
         Arguments& operator=(const Arguments&) = default;
 
+        std::string get_progname() const;
         std::shared_ptr<DistantMatrix> get_matrix() const;
         Algorithm get_algorithm() const;
         bool get_help_flag() const;

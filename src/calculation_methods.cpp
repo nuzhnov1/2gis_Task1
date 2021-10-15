@@ -6,14 +6,14 @@
 
 
 double _tour_len(const std::vector<size_t>& vertices, 
-                 const DistantMatrix& matrix);
+    const DistantMatrix& matrix);
 size_t _factorial(size_t num);
 
 
 std::pair<std::vector<size_t>, double> 
-brute_force(const DistantMatrix& _matrix) 
+brute_force(const DistantMatrix& matrix) 
 {
-    size_t size = _matrix.get_size();
+    size_t size = matrix.get_size();
 
     std::vector<size_t> cur_tour(size);
     std::vector<size_t> min_tour(size);
@@ -22,16 +22,17 @@ brute_force(const DistantMatrix& _matrix)
         cur_tour[i] = i;
     min_tour = cur_tour;
 
-    double cur_path = _tour_len(cur_tour, _matrix);
+    double cur_path = _tour_len(cur_tour, matrix);
     double min_path = cur_path;
 
+    // Number of iterations
     size_t count = _factorial(size - 1) / 2;
     
     for (size_t i = 1; i < count; i++) 
     {
         // Rearranging the vertices in lexicographic order
         std::next_permutation(cur_tour.begin() + 1, cur_tour.end());
-        cur_path = _tour_len(cur_tour, _matrix);
+        cur_path = _tour_len(cur_tour, matrix);
 
         if (cur_path < min_path) 
         {
@@ -44,9 +45,9 @@ brute_force(const DistantMatrix& _matrix)
 }
 
 std::pair<std::vector<size_t>, double>
-nearest_neighbour(const DistantMatrix& _matrix) 
+nearest_neighbour(const DistantMatrix& matrix) 
 {
-    size_t size = _matrix.get_size();
+    size_t size = matrix.get_size();
     std::vector<size_t> min_tour(size);
 
     // initialize min_tour to default tour: 1 -> 2 -> ... -> size - 1
@@ -57,12 +58,12 @@ nearest_neighbour(const DistantMatrix& _matrix)
     for (size_t i = 0; i < size - 1; i++) 
     {
         size_t next_vertex = i + 1;
-        double min_dist = _matrix.get_distant(min_tour[i], 
+        double min_dist = matrix.get_distant(min_tour[i], 
             min_tour[next_vertex]);
 
         for (size_t j = i + 2; j < size; j++) 
         {
-            double cur_dist = _matrix.get_distant(min_tour[i], min_tour[j]);
+            double cur_dist = matrix.get_distant(min_tour[i], min_tour[j]);
 
             if (cur_dist < min_dist) 
             {
@@ -74,25 +75,25 @@ nearest_neighbour(const DistantMatrix& _matrix)
         std::swap<size_t>(min_tour[i + 1], min_tour[next_vertex]);
     }
 
-    double min_path = _tour_len(min_tour, _matrix);
+    double min_path = _tour_len(min_tour, matrix);
 
     return std::pair<std::vector<size_t>, double>(min_tour, min_path);
 }
 
-double _tour_len(const std::vector<size_t>& _vertices,
-                 const DistantMatrix& _matrix) 
+double _tour_len(const std::vector<size_t>& vertices,
+    const DistantMatrix& matrix) 
 {
     double path = 0;
-    size_t count = _vertices.size();
+    size_t count = vertices.size();
 
     for (size_t i = 0; i < count; i++) 
     {
         // distant between last and first vertices
         if (i == count - 1)
-            path += _matrix.get_distant(_vertices[i], _vertices[0]);
+            path += matrix.get_distant(vertices[i], vertices[0]);
         // distant between current and next vertices
         else
-            path += _matrix.get_distant(_vertices[i], _vertices[i + 1]);
+            path += matrix.get_distant(vertices[i], vertices[i + 1]);
     }
 
     return path;
