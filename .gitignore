@@ -1,3 +1,5 @@
+# Excluded files and directories
 /.vscode
-*.o
-tsp
+/bin
+/obj
+
