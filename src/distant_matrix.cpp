@@ -19,5 +19,5 @@ size_t DistantMatrix::get_size() const
 
 double DistantMatrix::get_distant(size_t i, size_t j) const 
 {
-    return m_data[i * m_size + j];
+    return m_data.at(i * m_size + j);
 }
