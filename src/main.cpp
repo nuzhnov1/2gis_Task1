@@ -8,7 +8,7 @@
 
 
 void print_result(const std::vector<size_t>& result, double path_len);
-void print_manual(const std::string& progname);
+void print_manual(const char* progname);
 
 
 constexpr auto MANUAL_FILENAME = "manual.txt";
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     {
         args = ArgParser::parse_arguments(static_cast<size_t>(argc), argv);
     }
-    catch (const ArgParser::bad_parse& except) 
+    catch (const std::exception& except) 
     {
         std::cout << "Error: " << except.what() << "." << std::endl;
         
@@ -60,7 +60,7 @@ void print_result(const std::vector<size_t>& path, double path_len)
     std::cout << "Cycle length: " << path_len << "." << std::endl;
 }
 
-void print_manual(const std::string& progname)
+void print_manual(const char* _progname)
 {
 #if defined(_WIN32)
     char path_delim = '\\';
@@ -69,6 +69,7 @@ void print_manual(const std::string& progname)
 #endif
 
     // characters number of path without manual filename
+    std::string progname(_progname);
     size_t n = progname.find_last_of(path_delim);
     std::string man_filename = 
         std::string(progname.begin(), progname.begin() + n + 1) +

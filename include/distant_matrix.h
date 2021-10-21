@@ -13,8 +13,8 @@ class DistantMatrix
 
 public:
 
-    explicit DistantMatrix() noexcept = default;
-    explicit DistantMatrix(const std::vector<double>& data,
+    DistantMatrix() noexcept = default;
+    DistantMatrix(const std::vector<double>& data,
         size_t size) noexcept;
     DistantMatrix(const DistantMatrix& other) noexcept = default;
 

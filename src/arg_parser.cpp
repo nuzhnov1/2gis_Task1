@@ -1,5 +1,6 @@
 #include "arg_parser.h"
 
+#include <cstdio>
 #include <fstream>
 #include <cmath>
 #include <vector>
@@ -17,17 +18,17 @@ Algorithm _parse_algo_type(char* arg);
 
 
 bad_parse::bad_parse(const std::string& what) noexcept :
-    m_what(what)
+    std::exception(), m_what(what)
 {
 }
 
 bad_parse::bad_parse(const char* what) noexcept :
-    m_what(what)
+    std::exception(), m_what(what)
 {
 }
 
 bad_parse::bad_parse(const bad_parse& other) noexcept :
-    m_what(other.m_what)
+    std::exception(other), m_what(other.m_what)
 {
 }
 
@@ -37,16 +38,17 @@ const char* bad_parse::what() const noexcept
 }
 
 
-Arguments::Arguments(const std::string& progname, 
+Arguments::Arguments(char* progname, 
     const std::shared_ptr<DistantMatrix>& matrix_ptr, Algorithm algo,
-    bool help_flag) noexcept :
+    bool help_flag
+) noexcept :
 
     m_progname(progname), m_matrix_ptr(std::move(matrix_ptr)), m_algo(algo),
     m_help_flag(help_flag)
 {
 }
 
-std::string Arguments::get_progname() const
+const char* Arguments::get_progname() const
 {
     return m_progname;
 }
@@ -69,7 +71,7 @@ bool Arguments::get_help_flag() const
 
 Arguments ArgParser::parse_arguments(size_t argc, char** argv) 
 {
-    std::string progname = argv[0];
+    char* progname = argv[0];
     std::shared_ptr<DistantMatrix> matrix_ptr = nullptr;
     Algorithm algo = Algorithm::brute_force;
     bool help_flag = false;
@@ -77,7 +79,7 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
     // skip first commands argument - program name
     for (size_t i = 1; i < argc; i++) 
     {
-        std::string arg(argv[i]);
+        char* arg = argv[i];
 
         // parse single dash arguments
         if (arg[0] == '-') 
@@ -91,8 +93,7 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
                 i++;
                 if (i >= argc)
                 {
-                    throw bad_parse(
-                        "data file is not specified " 
+                    throw bad_parse("data file is not specified " 
                         "for parameter \"-f\"");
                 }
 
@@ -104,8 +105,7 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
                 i++;
                 if (i >= argc)
                 {
-                    throw bad_parse(
-                        "calculation mode is not set "
+                    throw bad_parse("calculation mode is not set "
                         "for parameter \"-m\"");
                 }
                 
@@ -121,20 +121,18 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
             }
             default:
             {
-                std::string message = 
-                    std::string("unknown parameter ") + std::string("\"") + 
-                    arg + std::string("\"");
+                char message[1024];
 
+                snprintf(message, 1024, "unknown parameter \"%s\"", arg);
                 throw bad_parse(message);
             }
             }
         }
         else
         {
-            std::string message = 
-                std::string("unknown parameter ") + std::string("\"") + 
-                arg + std::string("\"");
-
+            char message[1024];
+            
+            snprintf(message, 1024, "unknown parameter \"%s\"", arg);
             throw bad_parse(message);
         }
     }
@@ -177,10 +175,9 @@ std::shared_ptr<DistantMatrix> _parse_matrix(char* filename)
     
     if (stream.bad())
     {
-        std::string message = 
-            std::string("failed to read file ") + std::string("\"") + 
-            std::string(filename) + std::string("\"");
-         
+        char message[1024];
+
+        snprintf(message, 1024, "failed to read file \"%s\"", filename);
         throw bad_parse(message);
     }
     else if (!stream.is_open())
@@ -197,10 +194,9 @@ Algorithm _parse_algo_type(char* arg)
         return Algorithm::nearest_neighbour;
     else
     {
-        std::string message = 
-            std::string("unknown calculation mode ") + std::string("\"") + 
-            arg + std::string("\"");
-            
+        char message[1024];
+
+        snprintf(message, 1024, "unknown calculation mode \"%s\"", arg);
         throw bad_parse(message);
     }
 }

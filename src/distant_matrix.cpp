@@ -2,7 +2,8 @@
 
 
 DistantMatrix::DistantMatrix(const std::vector<double>& data, 
-    size_t size) noexcept :
+    size_t size
+) noexcept :
      
     m_data(data), m_size(size)
 {
