@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -90,12 +91,9 @@ void print_manual(const char* _progname)
     
     if (manual_file.bad())
     {
-        std::cout << "Failed to read manual from file " 
-            << '\"' << man_filename << '\"' << std::endl;
+        printf("Failed to read manual from file \"%s\".\n",
+            man_filename.c_str());
     }
     else if (!manual_file.is_open())
-    {
-        std::cout << "Failed to open manual file " 
-            << '\"' << man_filename << '\"' << std::endl;
-    }
+        printf("Failed to open manual file \"%s\".\n", man_filename.c_str());
 }
