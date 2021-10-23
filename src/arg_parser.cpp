@@ -79,10 +79,10 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
     // skip first commands argument - program name
     for (size_t i = 1; i < argc; i++) 
     {
-        char* arg = argv[i];
+        std::string arg = argv[i];
 
         // parse single dash arguments
-        if (arg[0] == '-') 
+        if (arg[0] == '-' && arg.size() == 2) 
         {
             char singe_dash_arg = arg[1];
 
@@ -123,7 +123,8 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
             {
                 char message[1024];
 
-                snprintf(message, 1024, "unknown parameter \"%s\"", arg);
+                snprintf(message, 1024, "unknown parameter \"%s\"",
+                    arg.c_str());
                 throw bad_parse(message);
             }
             }
@@ -132,7 +133,7 @@ Arguments ArgParser::parse_arguments(size_t argc, char** argv)
         {
             char message[1024];
             
-            snprintf(message, 1024, "unknown parameter \"%s\"", arg);
+            snprintf(message, 1024, "unknown parameter \"%s\"", arg.c_str());
             throw bad_parse(message);
         }
     }
